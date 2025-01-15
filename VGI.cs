@@ -12,16 +12,15 @@ namespace VGI_Item_Viewer
         DataTable dt = new DataTable();
         SqliteConnection sqlite;
 
-        public Dictionary<int, VGItem> MagicItems;
-        public Dictionary<int, VGItem> Melee;
-        public Dictionary<int, VGItem> Missile;
-        public Dictionary<int, VGItem> Pets;
+        public Dictionary<int, VGItem> MagicItems = new Dictionary<int, VGItem>();
+        public Dictionary<int, VGItem> Melee = new Dictionary<int, VGItem>();
+        public Dictionary<int, VGItem> Missile = new Dictionary<int, VGItem>();
+        public Dictionary<int, VGItem> Pets = new Dictionary<int, VGItem>();
 
-        public VGI()
+        public VGI(string dbName)
         {
             SqliteCommand cmd;
 
-            string dbName;// = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "ace_world.db");
 #if DEBUG
             dbName = "D:\\Games\\Decal\\VirindiPlugins\\VirindiGlobalInventory\\_Leafcull.db"; // For Testing Purposes
 #endif
@@ -42,12 +41,11 @@ namespace VGI_Item_Viewer
              * MissileWeapon = 9,
              * WandStaffOrb = 31,
              * Misc = 8, // PETS ARE IN THIS CLASS
-             * Misc                       = 0x00000080, (Pets)
              * 
              * Pets can be filtered by IconUnderlay = 06007420
              */
             // https://github.com/Mag-nus/Mag-Plugins/blob/43ee2ecf3e54f27b2362336d5e0c1336b22c1ca4/Shared/ObjectClass.cs#L61
-            string query = "SELECT rowid, OwnerCharName, ObjectName, SerializedData, ObjectClass FROM ObjectData";// where ObjectClass = ";
+            string query = "SELECT rowid, OwnerCharName, ObjectName, SerializedData, ObjectClass, ObjectID FROM ObjectData where ObjectClass = 1 or ObjectClass = 9 or ObjectClass = 31 or ObjectClass = 8";
             /*
              * 
              * Table => ObjectData
@@ -76,13 +74,29 @@ namespace VGI_Item_Viewer
                     item.ItemName = itemName;
                     item.CharacterName = ownerName;
                     item.ItemType = (Enum.ItemType)objectClass;
-                    if(itemName.Contains("Essence"))
-                    {
-                        var stop = true;
-                    }
                     try
                     {
-                        //item.LoadFromBlob(BLOB);
+                        item.LoadFromBlob(BLOB);
+
+                        switch (objectClass)
+                        {
+                            case 1:
+                                Melee.Add(rowId, item);
+                                break;
+                            case 9:
+                                Missile.Add(rowId, item);
+                                break;
+                            case 31:
+                                MagicItems.Add(rowId, item);
+                                break;
+                            case 8:
+                                if (item.GetPetLevel() > 0)
+                                {
+                                    Pets.Add(rowId, item);
+                                }
+                                break;
+                        }
+
                     }
                     catch (Exception e)
                     {

@@ -27,11 +27,18 @@
 
         <TabControl Grid.Row="1" x:Name="tabGroup">
             <TabItem Header="Wands" x:Name="tabMagic">
-                <Label>Magic</Label>
+                <DataGrid x:Name="gridMagicItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True"/>
             </TabItem>
-            <TabItem Header="Missile" x:Name="tabMissile"></TabItem>
-            <TabItem Header="Melee" x:Name="tabMelee"></TabItem>
-            <TabItem Header="Pets" x:Name="tabPets"></TabItem>
+            <TabItem Header="Missile" x:Name="tabMissile">
+                <DataGrid x:Name="gridMissileItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True"/>
+            </TabItem>
+            <TabItem Header="Melee" x:Name="tabMelee">
+                <DataGrid x:Name="gridMeleeItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True"/>
+            </TabItem>
+            <TabItem Header="Pets" x:Name="tabPets">
+                <DataGrid x:Name="gridPetItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True"/>
+            </TabItem>
+
         </TabControl>
 
         <StatusBar Grid.Row="2">
@@ -39,7 +46,7 @@
                 <TextBlock Name="lblResultsCount" Text="RESULTS" HorizontalAlignment="Left" />
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
-                <TextBlock Name="lblVersion" Text="VERSION INFOMATION" HorizontalAlignment="Right" />
+                <TextBlock Name="lblFilename" Text="FILENAME" HorizontalAlignment="Right" />
             </StatusBarItem>
         </StatusBar>
     </Grid>
