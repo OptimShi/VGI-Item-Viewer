@@ -172,7 +172,7 @@ namespace VGI_Item_Viewer
         public void CalcDamage()
         {
             float DPS= ((100 + 25) / 2 * (1 + ((float)Dmg / 100)) * (1 - (((float)Crit + 10) / 100))) + (100 * 2 * ((100 + (float)Dmg + (float)CritDmg) / 100) * (((float)Crit + 10) / 100));
-            Damage = (DPS / 136.5) * 100;
+            Damage = (DPS / 136.5);
         }
         public static PetGridItem ConvertFromItem(VGItem item)
         {

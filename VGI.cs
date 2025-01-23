@@ -17,12 +17,15 @@ namespace VGI_Item_Viewer
         public Dictionary<int, VGItem> Missile = new Dictionary<int, VGItem>();
         public Dictionary<int, VGItem> Pets = new Dictionary<int, VGItem>();
 
-        public VGI(string dbName)
+        public VGI(string dbName = "")
         {
             SqliteCommand cmd;
 
 #if DEBUG
-            dbName = "D:\\Games\\Decal\\VirindiPlugins\\VirindiGlobalInventory\\_Leafcull.db"; // For Testing Purposes
+            if (dbName == "")
+            {
+                dbName = "D:\\Games\\Decal\\VirindiPlugins\\VirindiGlobalInventory\\_Leafcull.db"; // For Testing Purposes
+            }
 #endif
 
             sqlite = new SqliteConnection("Data Source="+dbName);

@@ -6,6 +6,13 @@
         xmlns:local="clr-namespace:VGI_Item_Viewer"
         mc:Ignorable="d"
         Title="VGI Item Viewer" Height="450" Width="800">
+    <Window.CommandBindings>
+        <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="O" Modifiers="Control" Command="Open"/>
+    </Window.InputBindings>
+
     <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
             <RowDefinition Height="20" /> <!-- MENU -->
@@ -18,10 +25,11 @@
 
         <Menu Grid.Row="0">
             <MenuItem Header="File">
+                <MenuItem x:Name="miOpen" Header="Open..." Command="Open"/>
                 <MenuItem x:Name="miExit" Header="Exit" Click="miExit_Click"/>
             </MenuItem>
             <MenuItem Header="Edit">
-                <MenuItem x:Name="miEditOptions" Header="Options..."/>
+                <MenuItem x:Name="miEditOptions" Header="Options..." Click="miEditOptions_Click"/>
             </MenuItem>
         </Menu>
 
@@ -36,7 +44,7 @@
                 <DataGrid x:Name="gridMeleeItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True"/>
             </TabItem>
             <TabItem Header="Pets" x:Name="tabPets">
-                <DataGrid x:Name="gridPetItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True"/>
+                <DataGrid x:Name="gridPetItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGeneratingColumn="gridPetItems_AutoGeneratingColumn"/>
             </TabItem>
 
         </TabControl>

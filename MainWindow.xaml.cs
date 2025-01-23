@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Microsoft.Win32;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,13 +35,30 @@ namespace VGI_Item_Viewer
             if (File.Exists(filename))
             {
                 string baseFileName = System.IO.Path.GetFileName(filename);
-                lblFilename.Text = baseFileName;
 
-                vgi = new VGI(filename);
+                try
+                {
+                    ClearGrids();
 
-                LoadGrids();
+                    vgi = new VGI(filename);
+                    lblFilename.Text = baseFileName;
+
+                    LoadGrids();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("There was an error opening this file:\n" + e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
 
+        }
+
+        private void ClearGrids()
+        {
+            gridMagicItems.ItemsSource = new List<object>();
+            gridMeleeItems.ItemsSource = new List<object>();
+            gridMissileItems.ItemsSource = new List<object>();
+            gridPetItems.ItemsSource = new List<object>();
         }
 
         private void LoadGrids()
@@ -100,6 +118,33 @@ namespace VGI_Item_Viewer
         private void miExit_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
+        }
+
+        private void gridPetItems_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if(e.PropertyName == "Damage")
+            {
+                // Format the column as a percentage to two decimal places
+                (e.Column as DataGridTextColumn).Binding.StringFormat = "P02";
+            }
+        }
+
+        private void miEditOptions_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Not Yet Implemented");
+        }
+
+        private void OpenCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            // Open a file...
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "SQLite files (*.db)|*.db|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                // Handle the file open logic here
+                string filePath = openFileDialog.FileName;
+                LoadVGIFile(filePath);
+            }
         }
     }
 }
