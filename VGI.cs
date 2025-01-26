@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using System.Data;
 using System.IO;
+using System.Windows;
 using System.Windows.Documents;
 using System.Xml.Linq;
 
@@ -72,8 +73,10 @@ namespace VGI_Item_Viewer
                     var itemName = reader.GetString(2);
                     var BLOB = (byte[])reader[3];
                     var objectClass = reader.GetInt32(4);
+                    var objectId = reader.GetInt32(5);
 
                     VGItem item = new VGItem();
+                    item.ObjectId = objectId;
                     item.ItemName = itemName;
                     item.CharacterName = ownerName;
                     item.ItemType = (Enum.ItemType)objectClass;
@@ -87,7 +90,10 @@ namespace VGI_Item_Viewer
                                 Melee.Add(rowId, item);
                                 break;
                             case 9:
-                                Missile.Add(rowId, item);
+                                if (item.IntProps.ContainsKey(0x0d000011)) // AMMO_TYPE_INT
+                                {
+                                    Missile.Add(rowId, item);
+                                }
                                 break;
                             case 31:
                                 MagicItems.Add(rowId, item);
@@ -103,14 +109,50 @@ namespace VGI_Item_Viewer
                     }
                     catch (Exception e)
                     {
-                        // crap
-                        var STOP = true;
+                        MessageBox.Show("An unexpected error has occurred:\n\n" + e.Message);
                     }
-                    
                 }
             }
         }
 
+        public VGItem? GetItem(int objectId)
+        {
+            string query = $"SELECT rowid, OwnerCharName, ObjectName, SerializedData, ObjectClass, ObjectID FROM ObjectData where ObjectID = {objectId} limit 1";
+            
+            SqliteCommand cmd;
+            cmd = sqlite.CreateCommand();
+            cmd.CommandText = query;
 
+            using (var reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var rowId = reader.GetInt32(0);
+                    var ownerName = reader.GetString(1);
+                    var itemName = reader.GetString(2);
+                    var BLOB = (byte[])reader[3];
+                    var objectClass = reader.GetInt32(4);
+
+                    VGItem item = new VGItem();
+                    item.ItemName = itemName;
+                    item.CharacterName = ownerName;
+                    item.ItemType = (Enum.ItemType)objectClass;
+                    try
+                    {
+                        item.LoadFromBlob(BLOB);
+                        item.CleanUpKeys();
+                        return item;
+
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show("An unexpected error has occurred:\n\n" + e.Message);
+                    }
+
+                }
+            }
+
+            return null;
+        }
     }
 }

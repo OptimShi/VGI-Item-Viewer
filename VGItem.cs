@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using VGI_Item_Viewer.Enum;
@@ -24,6 +25,7 @@ namespace VGI_Item_Viewer
         public ItemType ItemType;
         public string ItemName;
         public string CharacterName;
+        public int ObjectId;
 
         public void LoadFromBlob(byte[] BLOB) 
         {
@@ -167,6 +169,8 @@ namespace VGI_Item_Viewer
                 attack = (int)((FloatProps[62] - 1) * 100);
             if (FloatProps.ContainsKey(152)) // ELEMENTAL_DAMAGE_MOD_FLOAT  
                 attack = (int)((FloatProps[152] - 1) * 100);
+            if (IntProps.ContainsKey(0x0d000022)) // DAMAGE_INT  
+                attack = (int)IntProps[0x0d000022];
 
             int cantripMod = 0;
             foreach (var s in Spells)
@@ -249,7 +253,7 @@ namespace VGI_Item_Viewer
         /*
          * Re-arranges the keys and properties by adjusting the Decal values into the proper server specific values
          */
-        private void CleanUpKeys()
+        public void CleanUpKeys()
         {
             try
             {
@@ -270,7 +274,7 @@ namespace VGI_Item_Viewer
                     FloatProps.Remove(k);
                 }
             }
-            if (FloatProps.ContainsKey(0x0A000009)){
+            if (FloatProps.ContainsKey(0x0A000009) && !IntProps.ContainsKey((int)PropertyInt.ItemWorkmanship)){
                 IntProps.Add((int)PropertyInt.ItemWorkmanship, (int)FloatProps[0x0A000009]);
                 FloatProps.Remove(0x0A000009);
             }

@@ -18,13 +18,16 @@ namespace VGI_Item_Viewer
         public int Tinks { get; set; }
         public int Melee_Defense { get; set; }
         public int Damage { get; set; }
-        public int Magic_Defense { get; set; }
+        public double Magic_Defense { get; set; }
         public int WieldReq { get; set; }
         public string Cantrips { get; set; }
+
+        private int ObjectId;
 
         public static MagicGridItem ConvertFromItem(VGItem item)
         {
             var grid = new MagicGridItem();
+            grid.ObjectId = item.ObjectId;
             grid.Name = item.GetFullName();
             grid.Character = item.CharacterName;
             grid.Melee_Defense = item.GetMeleeDefense();
@@ -44,17 +47,27 @@ namespace VGI_Item_Viewer
 
             if (item.FloatProps.ContainsKey(150)) // WEAPON_MAGIC_DEFENSE_FLOAT  
             {
-                grid.Magic_Defense = (int)((item.FloatProps[150] - 1) * 100);
+                grid.Magic_Defense = SmallModifier(item.FloatProps[150]);
             }
 
             grid.Cantrips = item.GetCantrips();
 
-            if (grid.Name == "Yellow Topaz Piercing Baton")
-            {
-                var stop = 1;
-            }
-
             return grid;
+        }
+
+        private static double SmallModifier(double rMod)
+        {
+            var v1 = 1.0 - rMod;
+            if (1.0 - rMod < 0.0)
+                v1 = v1 * -1;
+
+            return v1;
+        }
+
+
+        public int GetObjectId()
+        {
+            return ObjectId;
         }
     }
 
@@ -72,9 +85,12 @@ namespace VGI_Item_Viewer
         public int WieldReq { get; set; }
         public string Cantrips { get; set; }
 
+        private int ObjectId;
+
         public static MissileGridItem ConvertFromItem(VGItem item)
         {
             var grid = new MissileGridItem();
+            grid.ObjectId = item.ObjectId;
             grid.Name = item.GetFullName();
             grid.Character = item.CharacterName;
             grid.Damage_Type = item.GetDamageType();
@@ -103,6 +119,11 @@ namespace VGI_Item_Viewer
 
             return grid;
         }
+
+        public int GetObjectId()
+        {
+            return ObjectId;
+        }
     }
 
     public class MeleeGridItem
@@ -119,9 +140,12 @@ namespace VGI_Item_Viewer
         public int WieldReq { get; set; }
         public string Cantrips { get; set; }
 
+        private int ObjectId;
+
         public static MeleeGridItem ConvertFromItem(VGItem item)
         {
             var grid = new MeleeGridItem();
+            grid.ObjectId = item.ObjectId;
             grid.Name = item.GetFullName();
             grid.Character = item.CharacterName;
             grid.Damage_Type = item.GetDamageType();
@@ -149,6 +173,11 @@ namespace VGI_Item_Viewer
 
 
             return grid;
+        }
+
+        public int GetObjectId()
+        {
+            return ObjectId;
         }
     }
 
@@ -169,14 +198,17 @@ namespace VGI_Item_Viewer
         public int CritRes { get; set; }
         public int CritDmgRes { get; set; }
 
+        private int ObjectId;
+
         public void CalcDamage()
         {
-            float DPS= ((100 + 25) / 2 * (1 + ((float)Dmg / 100)) * (1 - (((float)Crit + 10) / 100))) + (100 * 2 * ((100 + (float)Dmg + (float)CritDmg) / 100) * (((float)Crit + 10) / 100));
+            float DPS = ((100 + 25) / 2 * (1 + ((float)Dmg / 100)) * (1 - (((float)Crit + 10) / 100))) + (100 * 2 * ((100 + (float)Dmg + (float)CritDmg) / 100) * (((float)Crit + 10) / 100));
             Damage = (DPS / 136.5);
         }
         public static PetGridItem ConvertFromItem(VGItem item)
         {
             var grid = new PetGridItem();
+            grid.ObjectId = item.ObjectId;
             grid.Name = item.GetFullName();
             grid.Character = item.CharacterName;
             grid.Level = item.GetPetLevel();
@@ -199,7 +231,7 @@ namespace VGI_Item_Viewer
             grid.DefRatings = grid.Res + grid.CritRes + grid.CritDmgRes;
             grid.TotalRatings = grid.OffRatings + grid.DefRatings;
 
-            if(grid.Dmg> 0)
+            if (grid.Dmg > 0)
             {
                 var stop = 0;
             }
@@ -207,6 +239,11 @@ namespace VGI_Item_Viewer
 
             return grid;
         }
-    }
 
+        public int GetObjectId()
+        {
+            return ObjectId;
+        }
+
+    }
 }

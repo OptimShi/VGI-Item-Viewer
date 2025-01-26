@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -11,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
+using VGI_Item_Viewer.Controls;
 
 namespace VGI_Item_Viewer
 {
@@ -27,7 +29,14 @@ namespace VGI_Item_Viewer
 
 #if DEBUG
             string dbName = "D:\\Games\\Decal\\VirindiPlugins\\VirindiGlobalInventory\\_Leafcull.db"; // For Testing Purposes
-            LoadVGIFile(dbName);
+            if (!File.Exists(dbName))
+            {
+                dbName = @"D:\games\Decal Plugins\VirindiPlugins\VirindiGlobalInventory\_Leafcull.db"; // Alt Pathing
+            }
+            if (File.Exists(dbName))
+            {
+                LoadVGIFile(dbName);
+            }
 #endif
         }
 
@@ -120,12 +129,29 @@ namespace VGI_Item_Viewer
             System.Windows.Application.Current.Shutdown();
         }
 
+        private void griMagicItems_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Magic_Defense":
+                    {
+                        // Format the column as a percentage to two decimal places
+                        (e.Column as DataGridTextColumn).Binding.StringFormat = "P01";
+                    }
+                    break;
+            }
+        }
+
         private void gridPetItems_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
-            if(e.PropertyName == "Damage")
+            switch (e.PropertyName)
             {
-                // Format the column as a percentage to two decimal places
-                (e.Column as DataGridTextColumn).Binding.StringFormat = "P02";
+                case "Damage":
+                    {
+                        // Format the column as a percentage to two decimal places
+                        (e.Column as DataGridTextColumn).Binding.StringFormat = "P02";
+                    }
+                    break;
             }
         }
 
@@ -144,6 +170,46 @@ namespace VGI_Item_Viewer
                 // Handle the file open logic here
                 string filePath = openFileDialog.FileName;
                 LoadVGIFile(filePath);
+            }
+        }
+
+        private void gridItems_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var grid = sender as DataGrid;
+            // make sure we have a selected item...
+            if (grid.SelectedItems.Count == 0)
+            {
+                return;
+            }
+
+            int objectId = 0;
+            if (grid.SelectedItem is MagicGridItem)
+            {
+                objectId = ((MagicGridItem)grid.SelectedItem).GetObjectId();
+            }
+            else if (grid.SelectedItem is MissileGridItem)
+            {
+                objectId = ((MissileGridItem)grid.SelectedItem).GetObjectId();
+            }
+            else if (grid.SelectedItem is MeleeGridItem)
+            {
+                objectId = ((MeleeGridItem)grid.SelectedItem).GetObjectId();
+            }
+            else if (grid.SelectedItem is PetGridItem)
+            {
+                objectId = ((PetGridItem)grid.SelectedItem).GetObjectId();
+            }
+
+            if (objectId != 0)
+            {
+                var item = vgi.GetItem(objectId);
+                if (item != null)
+                {
+                    var about = new DialogPreview(item);
+                    about.Owner = this;
+                    about.ShowDialog();
+                }
+
             }
         }
     }
