@@ -4,6 +4,9 @@ using System.IO;
 using System.Windows;
 using System.Windows.Documents;
 using System.Xml.Linq;
+using VGI_Item_Viewer.WeenieViewer.Appraisal;
+using WeenieViewer.Db.weenie;
+using WeenieViewer.Enums;
 
 namespace VGI_Item_Viewer
 {

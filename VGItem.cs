@@ -8,14 +8,20 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using VGI_Item_Viewer.Enum;
+using VGI_Item_Viewer.WeenieViewer.Appraisal;
+using WeenieViewer.Db.weenie;
+using WeenieViewer.Enums;
 
 namespace VGI_Item_Viewer
 {
     public class VGItem
     {
 
+        public Dictionary<int, bool> BoolProps = new Dictionary<int, bool>();
         public Dictionary<int, int> IntProps = new Dictionary<int, int>();
+        public Dictionary<int, Int64> Int64Props = new Dictionary<int, Int64>();
         public Dictionary<int, string> StrProps = new Dictionary<int, string>();
         public Dictionary<int, int> DidProps = new Dictionary<int, int>();
         public Dictionary<int, Double> FloatProps = new Dictionary<int, Double>();
@@ -51,7 +57,8 @@ namespace VGI_Item_Viewer
                 for (int i = 0; i < boolVals; i++)
                 {
                     var key = reader.ReadInt32();
-                    var val = reader.ReadByte();
+                    var val = reader.ReadBoolean();
+                    BoolProps.Add(key, val);
                 }
 
                 var floatVals = reader.ReadInt32();
@@ -67,6 +74,7 @@ namespace VGI_Item_Viewer
                 {
                     var key = reader.ReadInt32();
                     var val = reader.ReadInt64();
+                    Int64Props.Add(key, val);
                 }
 
                 var spellCount = reader.ReadInt32();
@@ -274,8 +282,8 @@ namespace VGI_Item_Viewer
                     FloatProps.Remove(k);
                 }
             }
-            if (FloatProps.ContainsKey(0x0A000009) && !IntProps.ContainsKey((int)PropertyInt.ItemWorkmanship)){
-                IntProps.Add((int)PropertyInt.ItemWorkmanship, (int)FloatProps[0x0A000009]);
+            if (FloatProps.ContainsKey(0x0A000009) && !IntProps.ContainsKey((int)PropertyInt.ITEM_WORKMANSHIP_INT)){
+                IntProps.Add((int)PropertyInt.ITEM_WORKMANSHIP_INT, (int)FloatProps[0x0A000009]);
                 FloatProps.Remove(0x0A000009);
             }
 
@@ -325,121 +333,121 @@ namespace VGI_Item_Viewer
                         break;
                     case 0x0D00001A: // ITEM_TYPE_INT
                         {
-                            IntProps.Add((int)PropertyInt.ItemType, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.ITEM_TYPE_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0D00000D: // CLOTHING_PRIORITY_INT
                         {
-                            IntProps.Add((int)PropertyInt.ClothingPriority, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.CLOTHING_PRIORITY_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0D000004: // ITEMS_CAPACITY_INT
                         {
-                            IntProps.Add((int)PropertyInt.ItemsCapacity, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.ITEMS_CAPACITY_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0D000005: // CONTAINERS_CAPACITY_INT
                         {
-                            IntProps.Add((int)PropertyInt.ContainersCapacity, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.CONTAINERS_CAPACITY_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0D000024: // RADARBLIP_COLOR_INT
                         {
-                            IntProps.Add((int)PropertyInt.RadarBlipColor, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.RADARBLIP_COLOR_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0D00000E: // LOCATIONS_INT
                         {
-                            IntProps.Add((int)PropertyInt.ValidLocations, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.LOCATIONS_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0D00000B: // CURRENT_WIELDED_LOCATION_INT
                         {
-                            IntProps.Add((int)PropertyInt.CurrentWieldedLocation, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.CURRENT_WIELDED_LOCATION_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0D000006: // STACK_SIZE_INT
                         {
-                            IntProps.Add((int)PropertyInt.StackSize, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.STACK_SIZE_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0D000007: // MAX_STACK_SIZE_INT
                         {
-                            IntProps.Add((int)PropertyInt.MaxStackSize, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.MAX_STACK_SIZE_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0d000009: // PLACEMENT_POSITION_INT 
                         {
-                            IntProps.Add((int)PropertyInt.PlacementPosition, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.PLACEMENT_POSITION_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0d00000f: // COMBAT_USE_INT
                         {
-                            IntProps.Add((int)PropertyInt.CombatUse, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.COMBAT_USE_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0d000010: // UI_EFFECTS_INT 
                         {
-                            IntProps.Add((int)PropertyInt.UiEffects, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.UI_EFFECTS_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0d000011: // AMMO_TYPE_INT 
                         {
-                            IntProps.Add((int)PropertyInt.AmmoType, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.AMMO_TYPE_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0d000012: // TARGET_TYPE_INT 
                         {
-                            IntProps.Add((int)PropertyInt.TargetType, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.TARGET_TYPE_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0d000014: // HOOK_TYPE_INT
                         {
-                            IntProps.Add((int)PropertyInt.HookType, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.HOOK_TYPE_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0d00001F: // WEAPON_TIME_INT
                         {
-                            IntProps.Add((int)PropertyInt.WeaponTime, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.WEAPON_TIME_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0d000020: // WEAPON_SKILL_INT
                         {
-                            IntProps.Add((int)PropertyInt.WeaponSkill, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.WEAPON_SKILL_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0d000021: // DAMAGE_TYPE_INT
                         {
-                            IntProps.Add((int)PropertyInt.DamageType, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.DAMAGE_TYPE_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0d000022: // DAMAGE_INT
                         {
-                            IntProps.Add((int)PropertyInt.Damage, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.DAMAGE_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0d000023: // ITEM_USABLE_INT
                         {
-                            IntProps.Add((int)PropertyInt.ItemUseable, IntProps[k]);
+                            IntProps.Add((int)PropertyInt.ITEM_USEABLE_INT, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
@@ -454,44 +462,44 @@ namespace VGI_Item_Viewer
                     /* DID Values */
                     case 0xD000016:
                         {
-                            DidProps.Add((int)PropertyDataId.Setup, IntProps[k]);
+                            DidProps.Add((int)PropertyDID.SETUP_DID, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0D000001:
                         {
-                            DidProps.Add((int)PropertyDataId.Icon, 0x06000000 + IntProps[k]);
+                            DidProps.Add((int)PropertyDID.ICON_DID, 0x06000000 + IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0D000008:
                         {
-                            DidProps.Add((int)PropertyDataId.Spell, IntProps[k]);
+                            DidProps.Add((int)PropertyDID.SPELL_DID, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0xd000029:
                         {
-                            DidProps.Add((int)PropertyDataId.IconOverlay, 0x06000000 + IntProps[k]);
+                            DidProps.Add((int)PropertyDID.ICON_OVERLAY_DID, 0x06000000 + IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0xd00002A:
                         {
-                            DidProps.Add((int)PropertyDataId.IconUnderlay, 0x06000000 + IntProps[k]);
+                            DidProps.Add((int)PropertyDID.ICON_UNDERLAY_DID, 0x06000000 + IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     /* IID Props */
                     case 0x0d000002:
                         {
-                            IidProps.Add((int)PropertyInstanceId.Owner, IntProps[k]);
+                            IidProps.Add((int)PropertyIID.OWNER_IID, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
                     case 0x0d00002b:
                         {
-                            IidProps.Add((int)PropertyInstanceId.Container, IntProps[k]);
+                            IidProps.Add((int)PropertyIID.CONTAINER_IID, IntProps[k]);
                             IntProps.Remove(k);
                         }
                         break;
@@ -619,5 +627,59 @@ namespace VGI_Item_Viewer
 
             return "";
         }
+
+        public dbWeenie? ConvertToWeenie()
+        {
+            dbWeenie Weenie = new dbWeenie();
+            try
+            {
+                foreach(var e in BoolProps)
+                    Weenie.Bools.Add((PropertyBool)e.Key, e.Value);
+
+                foreach(var e in FloatProps)
+                    Weenie.Floats.Add((PropertyFloat)e.Key, (float)e.Value);
+
+                foreach(var e in DidProps)
+                    Weenie.DIDs.Add((PropertyDID)e.Key, e.Value);
+
+                foreach(var e in IntProps)
+                    Weenie.Ints.Add((PropertyInt)e.Key, e.Value);
+
+                foreach(var e in Int64Props)
+                    Weenie.Int64s.Add((PropertyInt64)e.Key, e.Value);
+
+                foreach(var e in StrProps)
+                    Weenie.Strings.Add((PropertyString)e.Key, e.Value);
+
+                foreach(var e in IidProps)
+                    Weenie.IIDs.Add((PropertyIID)e.Key, e.Value);
+
+                var main = Window.GetWindow(App.Current.MainWindow) as MainWindow;
+                foreach (var e in Spells)
+                {
+                    var spell = new SpellBook();
+                    spell.SpellId = e;
+                    spell.Name = main.GetSpellName(Convert.ToUInt32(spell.SpellId));
+                    Weenie.SpellBook.Add(spell);
+                }
+                /*
+        
+                public List<SpellBook> SpellBook; // SpellID, Probability
+        public int WeenieType;
+        public string WeenieClass;
+        public string AppraisalText;
+                */
+
+
+                return Weenie;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An unexpected error has occurred:\n\n" + e.Message);
+            }
+
+            return null;
+        }
+
     }
 }

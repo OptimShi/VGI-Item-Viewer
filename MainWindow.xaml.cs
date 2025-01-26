@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 using VGI_Item_Viewer.Controls;
+using WeenieViewer.Db.weenie;
 
 namespace VGI_Item_Viewer
 {
@@ -22,9 +23,12 @@ namespace VGI_Item_Viewer
     public partial class MainWindow : Window
     {
         VGI vgi;
+        public Dictionary<uint, string> SpellNames;
+
         public MainWindow()
         {
             InitializeComponent();
+            InitSpellbook();
             lblFilename.Text = "";
 
 #if DEBUG
@@ -38,6 +42,18 @@ namespace VGI_Item_Viewer
                 LoadVGIFile(dbName);
             }
 #endif
+        }
+
+        private void InitSpellbook()
+        {
+            SpellNames = EmoteScriptLib.StringMap.Reader.GetIDToNames("SpellName.txt");
+        }
+        public string GetSpellName(uint spellId)
+        {
+            if(SpellNames.ContainsKey(spellId))
+                return SpellNames[spellId];
+
+            return $"UNKOWN_SPELL_ID_{spellId}";
         }
 
         private void LoadVGIFile(string filename) {

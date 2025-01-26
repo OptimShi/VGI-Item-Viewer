@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 
-
-namespace VGI_Item_Viewer.Enum
+namespace WeenieViewer.Enums
 {
     // Taken from ACE 
     public enum DamageType
@@ -54,7 +58,7 @@ namespace VGI_Item_Viewer.Enum
         public static string GetDamageTypes(this DamageType damageType)
         {
             string damageTypeString = "";
-            foreach (DamageType type in DamageType.GetValues(typeof(DamageType)))
+            foreach (DamageType type in Enum.GetValues(typeof(DamageType)))
             {
                 if ((damageType & type) > 0){
                     damageType = damageType & ~type; // remove the current type from the full damage type .. 

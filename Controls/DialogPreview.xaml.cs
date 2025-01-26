@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WeenieViewer.Appraisal;
 
 namespace VGI_Item_Viewer.Controls
 {
@@ -21,9 +22,14 @@ namespace VGI_Item_Viewer.Controls
     {
         public DialogPreview(VGItem item)
         {
+        
             InitializeComponent();
+            var weenie = item.ConvertToWeenie();
 
-            var test = 1;
+            var examine = new ItemExamine(weenie);
+            txtItemDescription.Text = item.GetFullName() + "\r\n\r\n";
+            txtItemDescription.Text += examine.Text;
+
         }
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
