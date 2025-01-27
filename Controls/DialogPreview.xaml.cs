@@ -25,11 +25,17 @@ namespace VGI_Item_Viewer.Controls
         
             InitializeComponent();
             var weenie = item.ConvertToWeenie();
-
-            var examine = new ItemExamine(weenie);
-            txtItemDescription.Text = item.GetFullName() + "\r\n\r\n";
-            txtItemDescription.Text += examine.Text;
-
+            if (weenie != null)
+            {
+                var examine = new ItemExamine(weenie);
+                string fullText = $"{item.GetFullName()}\r\nCharacter: {item.CharacterName }\r\n\r\n";
+                    
+                txtItemDescription.Text = fullText + examine.Text;
+            }
+            else
+            {
+                txtItemDescription.Text = "Unabled to convert item to weenie.";
+            }
         }
 
         private void btnOK_Click(object sender, RoutedEventArgs e)

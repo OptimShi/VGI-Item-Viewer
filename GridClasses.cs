@@ -17,7 +17,7 @@ namespace VGI_Item_Viewer
         public int Workmanship { get; set; }
         public int Tinks { get; set; }
         public int Melee_Defense { get; set; }
-        public int Damage { get; set; }
+        public float Damage { get; set; }
         public double Magic_Defense { get; set; }
         public int WieldReq { get; set; }
         public string Cantrips { get; set; }
@@ -31,7 +31,7 @@ namespace VGI_Item_Viewer
             grid.Name = item.GetFullName();
             grid.Character = item.CharacterName;
             grid.Melee_Defense = item.GetMeleeDefense();
-            grid.Damage = item.GetDamage();
+            grid.Damage = MathF.Round(item.GetDamage(),1);
 
             if (item.IntProps.ContainsKey(109)) // ITEM_DIFFICULTY_INT 
                 grid.LoreReq = item.IntProps[109];
@@ -80,7 +80,7 @@ namespace VGI_Item_Viewer
         public int Workmanship { get; set; }
         public int Tinks { get; set; }
         public int Melee_Defense { get; set; }
-        public int Damage { get; set; }
+        public float Damage { get; set; }
         public int Magic_Defense { get; set; }
         public int WieldReq { get; set; }
         public string Cantrips { get; set; }
@@ -135,7 +135,7 @@ namespace VGI_Item_Viewer
         public int Workmanship { get; set; }
         public int Tinks { get; set; }
         public int Melee_Defense { get; set; }
-        public int Damage { get; set; }
+        public float Damage { get; set; }
         public int Magic_Defense { get; set; }
         public int WieldReq { get; set; }
         public string Cantrips { get; set; }

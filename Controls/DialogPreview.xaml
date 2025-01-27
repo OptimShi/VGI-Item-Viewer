@@ -13,12 +13,12 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
-
+        <!--
         <ScrollViewer Grid.Row="0" HorizontalAlignment="Stretch">
-            <TextBlock x:Name="txtItemDescription" HorizontalAlignment="Stretch" TextWrapping="Wrap" Margin="5"/>
+            <TextBox x:Name="txtItemDescription" HorizontalAlignment="Stretch" TextWrapping="Wrap" Margin="5"/>
         </ScrollViewer>
-        <!-- <TextBox Grid.Row="0" x:Name="txtItemDescription" TextWrapping="Wrap" Text="TextBox" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalScrollBarVisibility="Auto"/>
         -->
+        <TextBox Grid.Row="0" x:Name="txtItemDescription" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalScrollBarVisibility="Auto" Margin="5" IsReadOnly="True" BorderThickness="0" Background="Transparent"/>
         <Button Grid.Row="1" x:Name="btnOK" Content="Close"  HorizontalAlignment="Center" VerticalAlignment="Center" Width="48" Click="btnOK_Click"/>
     </Grid>
 

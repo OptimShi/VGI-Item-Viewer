@@ -82,7 +82,7 @@ namespace VGI_Item_Viewer
                     item.ObjectId = objectId;
                     item.ItemName = itemName;
                     item.CharacterName = ownerName;
-                    item.ItemType = (Enum.ItemType)objectClass;
+                    item.ObjectClass = (Enum.ObjectClass)objectClass;
                     try
                     {
                         item.LoadFromBlob(BLOB);
@@ -139,7 +139,7 @@ namespace VGI_Item_Viewer
                     VGItem item = new VGItem();
                     item.ItemName = itemName;
                     item.CharacterName = ownerName;
-                    item.ItemType = (Enum.ItemType)objectClass;
+                    item.ObjectClass = (Enum.ObjectClass)objectClass;
                     try
                     {
                         item.LoadFromBlob(BLOB);

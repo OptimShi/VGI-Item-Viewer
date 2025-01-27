@@ -28,7 +28,7 @@ namespace VGI_Item_Viewer
         public Dictionary<int, int> IidProps = new Dictionary<int, int>();
         public List<int> Spells = new List<int>();
         public int WCID = 0;
-        public ItemType ItemType;
+        public ObjectClass ObjectClass;
         public string ItemName;
         public string CharacterName;
         public int ObjectId;
@@ -170,15 +170,24 @@ namespace VGI_Item_Viewer
             return defense + cantripMod;
         }
 
-        public int GetDamage()
+        public float GetDamage()
         {
-            int attack = 0;
-            if (FloatProps.ContainsKey(62)) // WEAPON_OFFENSE_FLOAT 
-                attack = (int)((FloatProps[62] - 1) * 100);
-            if (FloatProps.ContainsKey(152)) // ELEMENTAL_DAMAGE_MOD_FLOAT  
-                attack = (int)((FloatProps[152] - 1) * 100);
-            if (IntProps.ContainsKey(0x0d000022)) // DAMAGE_INT  
-                attack = (int)IntProps[0x0d000022];
+            float attack = 0;
+            switch (ObjectClass)
+            {
+                case ObjectClass.WandStaffOrb:
+                    if (FloatProps.ContainsKey((int)PropertyFloat.ELEMENTAL_DAMAGE_MOD_FLOAT))
+                        attack = SmallModifierToPerc(FloatProps[(int)PropertyFloat.ELEMENTAL_DAMAGE_MOD_FLOAT]) * 100;
+                    break;
+                case ObjectClass.MissileWeapon:
+                    if (IntProps.ContainsKey((int)PropertyInt.ELEMENTAL_DAMAGE_BONUS_INT))
+                        attack = IntProps[(int)PropertyInt.ELEMENTAL_DAMAGE_BONUS_INT];
+                    break;
+                case ObjectClass.MeleeWeapon:
+                    if (IntProps.ContainsKey((int)PropertyInt.DAMAGE_INT))
+                        attack = IntProps[(int)PropertyInt.DAMAGE_INT];
+                    break;
+            }
 
             int cantripMod = 0;
             foreach (var s in Spells)
@@ -186,29 +195,38 @@ namespace VGI_Item_Viewer
                 switch (s)
                 {
                     // Magic
-                    case 3251: if (cantripMod < 1) cantripMod = 1; break; // Minor Spirit Thirst
-                    case 6035: if (cantripMod < 1) cantripMod = 1; break; // Spirit of Izexi
-                    case 3252: if (cantripMod < 2) cantripMod = 2; break; // Spirit Thirst
-                    case 3250: if (cantripMod < 3) cantripMod = 3; break; // Major Spirit Thirst
-                    case 4670: if (cantripMod < 5) cantripMod = 5; break; // Epic Spirit Thirst
-                    case 6098: if (cantripMod < 7) cantripMod = 7; break; // Legendary Spirit Thirst                }
+                    case 3251: cantripMod = Math.Max(1, cantripMod); break; // Minor Spirit Thirst
+                    case 6035: cantripMod = Math.Max(1, cantripMod); break; // Spirit of Izexi
+                    case 3252: cantripMod = Math.Max(2, cantripMod); break; // Spirit Thirst
+                    case 3250: cantripMod = Math.Max(3, cantripMod); break; // Major Spirit Thirst
+                    case 4670: cantripMod = Math.Max(5, cantripMod); break; // Epic Spirit Thirst
+                    case 6098: cantripMod = Math.Max(7, cantripMod); break; // Legendary Spirit Thirst                }
 
                     // Melee/Missile
-                    case 2453: if (cantripMod < 2) cantripMod = 2; break; // Lesser Thorns
-                    case 2486: if (cantripMod < 2) cantripMod = 2; break; // Blood Thirst
-                    case 2487: if (cantripMod < 2) cantripMod = 2; break; // Spirit Strike
-                    case 2598: if (cantripMod < 2) cantripMod = 2; break; // Minor Blood Thirst
-                    case 3828: if (cantripMod < 3) cantripMod = 3; break; // Rage of Grael
-                    case 2454: if (cantripMod < 4) cantripMod = 4; break; // Thorns
-                    case 2586: if (cantripMod < 4) cantripMod = 4; break; // Major Blood Thirst
-                    case 2629: if (cantripMod < 5) cantripMod = 5; break; // Huntress' Boon
-                    case 4661: if (cantripMod < 7) cantripMod = 7; break; // Epic Blood Thirst
-                    case 6089: if (cantripMod < 10) cantripMod = 10; break; // Legendary Blood Thirst
-                    case 2452: if (cantripMod < 6) cantripMod = 6; break; // Greater Thorns
+                    case 2453: cantripMod = Math.Max(2, cantripMod); break; // Lesser Thorns
+                    case 2486: cantripMod = Math.Max(2, cantripMod); break; // Blood Thirst
+                    case 2487: cantripMod = Math.Max(2, cantripMod); break; // Spirit Strike
+                    case 2598: cantripMod = Math.Max(2, cantripMod); break; // Minor Blood Thirst
+                    case 3828: cantripMod = Math.Max(3, cantripMod); break; // Rage of Grael
+                    case 2454: cantripMod = Math.Max(4, cantripMod); break; // Thorns
+                    case 2586: cantripMod = Math.Max(4, cantripMod); break; // Major Blood Thirst
+                    case 2629: cantripMod = Math.Max(5, cantripMod); break; // Huntress' Boon
+                    case 4661: cantripMod = Math.Max(7, cantripMod); break; // Epic Blood Thirst
+                    case 6089: cantripMod = Math.Max(10, cantripMod); break; // Legendary Blood Thirst
+                    case 2452: cantripMod = Math.Max(6, cantripMod); break; // Greater Thorns
                 }
             }
 
             return attack + cantripMod;
+        }
+
+        private float SmallModifierToPerc(double rMod)
+        {
+            var v1 = 1.0 - rMod;
+            if (1.0 - rMod < 0.0)
+                v1 = v1 * -1;
+
+            return Convert.ToSingle(v1);
         }
 
         public string GetCantrips()

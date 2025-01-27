@@ -149,6 +149,11 @@ namespace VGI_Item_Viewer
         {
             switch (e.PropertyName)
             {
+                case "Damage":
+                    {
+                        //(e.Column as DataGridTextColumn).Binding.StringFormat = "01";
+                    }
+                    break;
                 case "Magic_Defense":
                     {
                         // Format the column as a percentage to two decimal places
