@@ -32,6 +32,7 @@ namespace VGI_Item_Viewer
             lblFilename.Text = "";
 
 #if DEBUG
+            // Try to load our test database
             string dbName = "D:\\Games\\Decal\\VirindiPlugins\\VirindiGlobalInventory\\_Leafcull.db"; // For Testing Purposes
             if (!File.Exists(dbName))
             {
@@ -41,6 +42,15 @@ namespace VGI_Item_Viewer
             {
                 LoadVGIFile(dbName);
             }
+
+            // Add reload menu item
+            MenuItem newMenuItem1 = new MenuItem();
+            newMenuItem1.Header = "Reload";
+            newMenuItem1.Click += (object sender, RoutedEventArgs e) =>
+            {
+                LoadVGIFile(dbName);
+            };
+            MainMenu.Items.Add(newMenuItem1);
 #endif
         }
 
@@ -154,6 +164,41 @@ namespace VGI_Item_Viewer
                         //(e.Column as DataGridTextColumn).Binding.StringFormat = "01";
                     }
                     break;
+                case "MaxMeleeDefense":
+                case "Magic_Defense":
+                    {
+                        // Format the column as a percentage to two decimal places
+                        (e.Column as DataGridTextColumn).Binding.StringFormat = "P01";
+                    }
+                    break;
+            }
+        }
+
+        private void griMissileItems_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Melee_Defense":
+                case "Magic_Defense":
+                    {
+                        // Format the column as a percentage to two decimal places
+                        (e.Column as DataGridTextColumn).Binding.StringFormat = "P01";
+                    }
+                    break;
+            }
+        }
+
+        private void griMeleeItems_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Damage":
+                    {
+                        //(e.Column as DataGridTextColumn).Binding.StringFormat = "01";
+                    }
+                    break;
+                case "MaxMeleeDefense":
+                case "Melee_Defense":
                 case "Magic_Defense":
                     {
                         // Format the column as a percentage to two decimal places

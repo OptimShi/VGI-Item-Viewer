@@ -23,7 +23,7 @@
             <ColumnDefinition Width=".1*"/>
         </Grid.ColumnDefinitions>
 
-        <Menu Grid.Row="0">
+        <Menu x:Name="MainMenu" Grid.Row="0">
             <MenuItem Header="File">
                 <MenuItem x:Name="miOpen" Header="Open..." Command="Open"/>
                 <MenuItem x:Name="miExit" Header="Exit" Click="miExit_Click"/>
@@ -38,10 +38,10 @@
                 <DataGrid x:Name="gridMagicItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGeneratingColumn="griMagicItems_AutoGeneratingColumn" MouseDoubleClick="gridItems_MouseDoubleClick"/>
             </TabItem>
             <TabItem Header="Missile" x:Name="tabMissile">
-                <DataGrid x:Name="gridMissileItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" MouseDoubleClick="gridItems_MouseDoubleClick"/>
+                <DataGrid x:Name="gridMissileItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGeneratingColumn="griMissileItems_AutoGeneratingColumn" MouseDoubleClick="gridItems_MouseDoubleClick"/>
             </TabItem>
             <TabItem Header="Melee" x:Name="tabMelee">
-                <DataGrid x:Name="gridMeleeItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" MouseDoubleClick="gridItems_MouseDoubleClick"/>
+                <DataGrid x:Name="gridMeleeItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGeneratingColumn="griMeleeItems_AutoGeneratingColumn" MouseDoubleClick="gridItems_MouseDoubleClick"/>
             </TabItem>
             <TabItem Header="Pets" x:Name="tabPets">
                 <DataGrid x:Name="gridPetItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGeneratingColumn="gridPetItems_AutoGeneratingColumn" MouseDoubleClick="gridItems_MouseDoubleClick"/>

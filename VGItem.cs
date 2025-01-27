@@ -145,12 +145,12 @@ namespace VGI_Item_Viewer
 
         }
 
-        public int GetMeleeDefense()
+        public float GetMeleeDefense()
         {
-            int defense = 0;
+            float defense = 0;
             if (FloatProps.ContainsKey(29)) // WEAPON_DEFENSE_FLOAT 
             {
-                defense = (int)((FloatProps[29] - 1) * 100);
+                defense = ((float)FloatProps[29] - 1);
             }
 
             int cantripMod = 0;
@@ -167,7 +167,21 @@ namespace VGI_Item_Viewer
                 }
             }
 
-            return defense + cantripMod;
+            return defense + (cantripMod / 100);
+        }
+
+        public float GetMaxMeleeDefense()
+        {
+            if (GetFullName() == "White Sapphire Blunt Sceptre")
+            {
+                var test = 1;
+            }
+
+            float defense = GetMeleeDefense();
+
+            int tinksRemaining = TinksReamining();
+
+            return defense + tinksRemaining/100;
         }
 
         public float GetDamage()
@@ -268,13 +282,40 @@ namespace VGI_Item_Viewer
 
         public string GetDamageType()
         {
-            if (IntProps.ContainsKey(45)) // DAMAGE_TYPE_INT  
+            if (IntProps.ContainsKey(0x0d000021)) // DAMAGE_TYPE_INT  
             {
-                return DamageTypeExtensions.GetDamageTypes((DamageType)IntProps[45]);
+                return DamageTypeExtensions.GetDamageTypes((DamageType)IntProps[0x0d000021]);
             }
 
             return "";
         }
+
+        public int TinksReamining()
+        {
+            // Ensure this item is loot gen by checking for Workmanship
+            if (!FloatProps.ContainsKey(0x0A000009) && !IntProps.ContainsKey((int)PropertyInt.ITEM_WORKMANSHIP_INT))
+                return 0;
+
+            int tinksRemaining = 10; // Max number of times is 10
+            if (IntProps.ContainsKey((int)PropertyInt.NUM_TIMES_TINKERED_INT))
+                tinksRemaining -= IntProps[(int)PropertyInt.NUM_TIMES_TINKERED_INT];
+
+            // Leave a tink for imbue
+            if (tinksRemaining > 0 && tinksRemaining < 10 && !IsImbued())
+                tinksRemaining -= 1;
+
+            return Math.Max(tinksRemaining, 0); // ensure we don't go less than 0
+        }
+
+        public bool IsImbued() {
+            if (IntProps.ContainsKey((int)PropertyInt.IMBUED_EFFECT_INT) && IntProps[(int)PropertyInt.IMBUED_EFFECT_INT] != 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
 
         /*
          * Re-arranges the keys and properties by adjusting the Decal values into the proper server specific values
@@ -641,6 +682,31 @@ namespace VGI_Item_Viewer
                 case 75: return "Oak";
                 case 76: return "Pine";
                 case 77: return "Teak";
+            }
+
+            return "";
+        }
+
+        public string GetPetMastery()
+        {
+            List<string> primalist = new List<string> { " Knight ", " Elemental ", " Child ", "K'nath ", " Wisp " }; // SummoningMastery.1
+            List<string> necromancer = new List<string> { " Maiden ", " Skeleton ", " Spectre ", " Zombie ", }; // SummoningMastery.2
+            List<string> naturalist = new List<string> { " Grievver ", " Moar ", " Phyntos ", }; // SummoningMastery.3
+
+            foreach (var n in naturalist)
+            {
+                if (ItemName.Contains(n))
+                    return "Naturalist";
+            }
+            foreach (var n in necromancer)
+            {
+                if (ItemName.Contains(n))
+                    return "Necromancer";
+            }
+            foreach (var n in primalist)
+            {
+                if (ItemName.Contains(n))
+                    return "Primalist";
             }
 
             return "";

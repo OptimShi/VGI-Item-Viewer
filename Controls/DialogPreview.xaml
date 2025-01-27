@@ -8,6 +8,7 @@
         FocusManager.FocusedElement="{Binding ElementName=btnOK}"
         ShowInTaskbar="False"
         Title="Item Preview" Height="370" Width="330" ResizeMode="CanResizeWithGrip" >
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />

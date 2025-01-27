@@ -16,7 +16,7 @@ namespace VGI_Item_Viewer
         public int LoreReq { get; set; }
         public int Workmanship { get; set; }
         public int Tinks { get; set; }
-        public int Melee_Defense { get; set; }
+        public float MaxMeleeDefense { get; set; }
         public float Damage { get; set; }
         public double Magic_Defense { get; set; }
         public int WieldReq { get; set; }
@@ -30,7 +30,7 @@ namespace VGI_Item_Viewer
             grid.ObjectId = item.ObjectId;
             grid.Name = item.GetFullName();
             grid.Character = item.CharacterName;
-            grid.Melee_Defense = item.GetMeleeDefense();
+            grid.MaxMeleeDefense = item.GetMaxMeleeDefense();
             grid.Damage = MathF.Round(item.GetDamage(),1);
 
             if (item.IntProps.ContainsKey(109)) // ITEM_DIFFICULTY_INT 
@@ -79,9 +79,9 @@ namespace VGI_Item_Viewer
         public int LoreReq { get; set; }
         public int Workmanship { get; set; }
         public int Tinks { get; set; }
-        public int Melee_Defense { get; set; }
+        public float Melee_Defense { get; set; }
         public float Damage { get; set; }
-        public int Magic_Defense { get; set; }
+        public float Magic_Defense { get; set; }
         public int WieldReq { get; set; }
         public string Cantrips { get; set; }
 
@@ -134,7 +134,7 @@ namespace VGI_Item_Viewer
         public int LoreReq { get; set; }
         public int Workmanship { get; set; }
         public int Tinks { get; set; }
-        public int Melee_Defense { get; set; }
+        public float Melee_Defense { get; set; }
         public float Damage { get; set; }
         public int Magic_Defense { get; set; }
         public int WieldReq { get; set; }
@@ -186,11 +186,12 @@ namespace VGI_Item_Viewer
         public string Name { get; set; }
         public string Character { get; set; }
         public int Level { get; set; }
+        public string Mastery { get; set; }
         public string Element { get; set; }
+        public double Damage { get; set; }
         public int TotalRatings { get; set; }
         public int OffRatings { get; set; }
         public int DefRatings { get; set; }
-        public double Damage { get; set; }
         public int Dmg { get; set; }
         public int Crit { get; set; }
         public int CritDmg { get; set; }
@@ -212,6 +213,7 @@ namespace VGI_Item_Viewer
             grid.Name = item.GetFullName();
             grid.Character = item.CharacterName;
             grid.Level = item.GetPetLevel();
+            grid.Mastery = item.GetPetMastery();
             grid.Element = item.GetPetDamageType();
             if (item.IntProps.ContainsKey(370))
                 grid.Dmg = item.IntProps[370];

@@ -93,10 +93,19 @@ namespace VGI_Item_Viewer
                                 Melee.Add(rowId, item);
                                 break;
                             case 9:
+                                if(item.IntProps.ContainsKey(0x0D00000E)) // LOCATIONS_INT as provided by Decal
+                                {
+                                    if ((item.IntProps[0x0D00000E] & 0x400000) > 0)
+                                    {
+                                        Missile.Add(rowId, item);
+                                    }
+                                }
+                                /*
                                 if (item.IntProps.ContainsKey(0x0d000011)) // AMMO_TYPE_INT
                                 {
                                     Missile.Add(rowId, item);
                                 }
+                                */
                                 break;
                             case 31:
                                 MagicItems.Add(rowId, item);

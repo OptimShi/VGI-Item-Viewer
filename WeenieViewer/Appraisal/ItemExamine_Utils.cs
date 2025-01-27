@@ -95,8 +95,11 @@ namespace WeenieViewer.Appraisal
         private string SmallModifierToString(float rMod)
         {
             var v1 = 1.0 - rMod;
-            if (1.0 - rMod < 0.0)
-                v1 = v1 * -1;
+            if (1.0f - rMod < 0.0f)
+                v1 = -v1;
+
+            if(rMod < 1f)
+                v1 = -v1;
 
             string g_szPecentText = $"{(v1 * 100.0):N1}%";
             return g_szPecentText;

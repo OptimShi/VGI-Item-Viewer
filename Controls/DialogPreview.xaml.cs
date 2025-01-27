@@ -24,6 +24,7 @@ namespace VGI_Item_Viewer.Controls
         {
         
             InitializeComponent();
+
             var weenie = item.ConvertToWeenie();
             if (weenie != null)
             {
@@ -36,6 +37,9 @@ namespace VGI_Item_Viewer.Controls
             {
                 txtItemDescription.Text = "Unabled to convert item to weenie.";
             }
+
+            // Bind ESC to close window
+            PreviewKeyDown += new KeyEventHandler(HandleEsc);
         }
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
@@ -43,5 +47,10 @@ namespace VGI_Item_Viewer.Controls
             this.Close();
         }
 
+        private void HandleEsc(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+                Close();
+        }
     }
 }
