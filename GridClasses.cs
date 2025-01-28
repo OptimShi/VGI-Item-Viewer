@@ -46,9 +46,7 @@ namespace VGI_Item_Viewer
                 grid.WieldReq = item.IntProps[160];
 
             if (item.FloatProps.ContainsKey(150)) // WEAPON_MAGIC_DEFENSE_FLOAT  
-            {
                 grid.Magic_Defense = SmallModifier(item.FloatProps[150]);
-            }
 
             grid.Cantrips = item.GetCantrips();
 

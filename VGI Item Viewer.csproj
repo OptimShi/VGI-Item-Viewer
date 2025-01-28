@@ -9,7 +9,12 @@
     <UseWPF>true</UseWPF>
     <AppDesignerFolder>Enum</AppDesignerFolder>
     <Platforms>AnyCPU;x64</Platforms>
+    <ApplicationIcon>Icons\VGI_Viewer.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Icons\VGI_Viewer.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0" />
