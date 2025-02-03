@@ -6101,17 +6101,19 @@ void __thiscall ItemExamineUI::Appraisal_ShowDescription(ItemExamineUI *this, Ap
     if ( !InterlockedDecrement((volatile LONG *)&strAppend.m_buffer[-1].m_cRef + 1) && v6 )
       (**(void (__thiscall ***)(char *, signed int))v6)(v6, 1);
   }
+  
+  /* -- */
   strDesc.m_buffer = (AC1Legacy::PSRefBuffer<char> *)AC1Legacy::PStringBase<char>::s_NullBuffer;
-  InterlockedIncrement((volatile LONG *)(AC1Legacy::PStringBase<char>::s_NullBuffer + 4));
-  if ( AppraisalProfile::InqString(_prof, 0x10u, &strDesc) )
+    InterlockedIncrement((volatile LONG *)(AC1Legacy::PStringBase<char>::s_NullBuffer + 4));
+  if ( AppraisalProfile::InqString(_prof, PropertyString.LONG_DESC_STRING, &strDesc) )
   {
     gearPlatingName.m_buffer = (AC1Legacy::PSRefBuffer<char> *)AC1Legacy::PStringBase<char>::s_NullBuffer;
     InterlockedIncrement((volatile LONG *)(AC1Legacy::PStringBase<char>::s_NullBuffer + 4));
-    if ( AppraisalProfile::InqString(_prof, 0x34u, &gearPlatingName) )
+    if ( AppraisalProfile::InqString(_prof, PropertyString.GEAR_PLATING_NAME_STRING, &gearPlatingName) )
       AC1Legacy::PStringBase<unsigned short>::operator=(
         (AC1Legacy::PStringBase<unsigned short> *)&strDesc,
         (AC1Legacy::PStringBase<unsigned short> *)&gearPlatingName);
-    if ( AppraisalProfile::InqInt(_prof, 0xACu, &iDecoration) )
+    if ( AppraisalProfile::InqInt(_prof, PropertyInt.APPRAISAL_LONG_DESC_DECORATION_INT, &iDecoration) )
     {
       v7 = (AC1Legacy::PSRefBuffer<char> *)AC1Legacy::PStringBase<char>::s_NullBuffer;
       strPrepend.m_buffer = (AC1Legacy::PSRefBuffer<char> *)AC1Legacy::PStringBase<char>::s_NullBuffer;
@@ -6120,7 +6122,7 @@ void __thiscall ItemExamineUI::Appraisal_ShowDescription(ItemExamineUI *this, Ap
       strAppend.m_buffer = (AC1Legacy::PSRefBuffer<char> *)AC1Legacy::PStringBase<char>::s_NullBuffer;
       InterlockedIncrement((volatile LONG *)(AC1Legacy::PStringBase<char>::s_NullBuffer + 4));
       v9 = _prof;
-      if ( iDecoration & 1 && AppraisalProfile::InqInt(_prof, 0x69u, &iGemCount) )
+      if ( iDecoration & 1 && AppraisalProfile::InqInt(_prof, PropertyInt.ITEM_WORKMANSHIP_INT, &iGemCount) )
       {
         strMaterial.m_charbuffer = (PSRefBufferCharData<char> *)AC1Legacy::PStringBase<char>::s_NullBuffer;
         InterlockedIncrement((volatile LONG *)(AC1Legacy::PStringBase<char>::s_NullBuffer + 4));
@@ -6136,7 +6138,7 @@ void __thiscall ItemExamineUI::Appraisal_ShowDescription(ItemExamineUI *this, Ap
         CLogonHeader::HandshakeWireData::~HandshakeWireData((CLogonHeader::HandshakeWireData *)&strMaterial);
         v7 = strPrepend.m_buffer;
       }
-      if ( AppraisalProfile::InqInt(_prof, 0x83u, &iMaterial) && iMaterial > 0 )
+      if ( AppraisalProfile::InqInt(_prof, PropertyInt.MATERIAL_TYPE_INT, &iMaterial) && iMaterial > 0 )
       {
         strMaterial.m_charbuffer = PStringBase<char>::s_NullBuffer.m_charbuffer;
         InterlockedIncrement((volatile LONG *)&PStringBase<char>::s_NullBuffer.m_charbuffer[-1]);
@@ -6168,8 +6170,8 @@ void __thiscall ItemExamineUI::Appraisal_ShowDescription(ItemExamineUI *this, Ap
         v9 = _prof;
       }
       if ( iDecoration & 4
-        && AppraisalProfile::InqInt(v9, 0xB1u, &iGemCount)
-        && AppraisalProfile::InqInt(v9, 0xB2u, &iGemType) )
+        && AppraisalProfile::InqInt(v9, PropertyInt.GEM_COUNT_INT, &iGemCount)
+        && AppraisalProfile::InqInt(v9, PropertyInt.GEM_TYPE_INT, &iGemType) )
       {
         PStringBase<char>::PStringBase<char>(&strMaterial);
         if ( iGemCount == 1 )
@@ -6242,6 +6244,8 @@ void __thiscall ItemExamineUI::Appraisal_ShowDescription(ItemExamineUI *this, Ap
     ItemExamineUI::AddItemInfo((ItemExamineUI *)v3, &name, 0, 1);
     ItemExamineUI::AddItemInfo((ItemExamineUI *)v3, strDesc.m_buffer->m_data, 0, 1);
   }
+  /* -- */
+
   bitfield = 0;
   if ( AppraisalProfile::InqInt(v2, 0x6Fu, &bitfield) )
   {
@@ -6474,3 +6478,33 @@ void __thiscall ItemExamineUI::SetAppraiseInfo(ItemExamineUI *this, AppraisalPro
   }
 }
 
+//----- (005B48E0) --------------------------------------------------------
+int __cdecl AppraisalSystem::InqWorkmanshipAdjective(unsigned int wlevel, AC1Legacy::PStringBase<char> *workmanship, int gem)
+{
+  unsigned int v3; // esi@1
+  AC1Legacy::PStringBase<char> *v4; // edi@3
+  const char *v5; // eax@4
+  unsigned int v6; // esi@6
+  int v7; // eax@6
+
+  v3 = wlevel;
+  if ( wlevel >= 0xB )
+    v3 = 10;
+  v4 = workmanship;
+  AC1Legacy::PStringBase<char>::set(workmanship, (&rgWorkmanshipStrings)[4 * v3]);
+  if ( v3 <= 4 )
+  {
+    v5 = "cut";
+    if ( !gem )
+      v5 = "crafted";
+    AC1Legacy::PStringBase<char>::PStringBase<char>((AC1Legacy::PStringBase<char> *)&wlevel, v5);
+    v6 = wlevel;
+    v7 = *(_DWORD *)(wlevel + 8);
+    if ( v7 != 1 && wlevel != AC1Legacy::PStringBase<char>::s_NullBuffer )
+      AC1Legacy::PStringBase<char>::append_n_chars(v4, (const char *)(wlevel + 20), v7 - 1);
+    if ( !InterlockedDecrement((volatile LONG *)(v6 + 4)) )
+      (**(void (__thiscall ***)(_DWORD, _DWORD))v6)(v6, 1);
+  }
+  return 1;
+}
+// 8EE10C: using guessed type int AC1Legacy::PStringBase<char>::s_NullBuffer;

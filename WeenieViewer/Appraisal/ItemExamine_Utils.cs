@@ -286,6 +286,92 @@ namespace WeenieViewer.Appraisal
             return result;
         }
 
+        private static string InqMaterialName(int iMaterialType)
+        {
+            switch (iMaterialType)
+            {
+                case 1: return "Ceramic";
+                case 2: return "Porcelain";
+                case 3: return "Cloth";
+                case 4: return "Linen";
+                case 5: return "Satin";
+                case 6: return "Silk";
+                case 7: return "Velvet";
+                case 8: return "Wool";
+                case 9: return "Gem";
+                case 10: return "Agate";
+                case 11: return "Amber";
+                case 12: return "Amethyst";
+                case 13: return "Aquamarine";
+                case 14: return "Azurite";
+                case 15: return "Black Garnet";
+                case 16: return "Black Opal";
+                case 17: return "Bloodstone";
+                case 18: return "Carnelian";
+                case 19: return "Citrine";
+                case 20: return "Diamond";
+                case 21: return "Emerald";
+                case 22: return "Fire Opal";
+                case 23: return "Green Garnet";
+                case 24: return "Green Jade";
+                case 25: return "Hematite";
+                case 26: return "Imperial Topaz";
+                case 27: return "Jet";
+                case 28: return "Lapis Lazuli";
+                case 29: return "Lavender Jade";
+                case 30: return "Malachite";
+                case 31: return "Moonstone";
+                case 32: return "Onyx";
+                case 33: return "Opal";
+                case 34: return "Peridot";
+                case 35: return "Red Garnet";
+                case 36: return "Red Jade";
+                case 37: return "Rose Quartz";
+                case 38: return "Ruby";
+                case 39: return "Sapphire";
+                case 40: return "Smoky Quartz";
+                case 41: return "Sunstone";
+                case 42: return "Tiger Eye";
+                case 43: return "Tourmaline";
+                case 44: return "Turquoise";
+                case 45: return "White Jade";
+                case 46: return "White Quartz";
+                case 47: return "White Sapphire";
+                case 48: return "Yellow  Garnet";
+                case 49: return "Yellow Topaz";
+                case 50: return "Zircon";
+                case 51: return "Ivory";
+                case 52: return "Leather";
+                case 53: return "Armoredillo Hide";
+                case 54: return "Gromnie Hide";
+                case 55: return "Reed Shark Hide";
+                case 56: return "Metal";
+                case 57: return "Brass";
+                case 58: return "Bronze";
+                case 59: return "Copper";
+                case 60: return "Gold";
+                case 61: return "Iron";
+                case 62: return "Pyreal";
+                case 63: return "Silver";
+                case 64: return "Steel";
+                case 65: return "Stone";
+                case 66: return "Alabaster";
+                case 67: return "Granite";
+                case 68: return "Marble";
+                case 69: return "Obsidian";
+                case 70: return "Sandstone";
+                case 71: return "Serpentine";
+                case 72: return "Wood";
+                case 73: return "Ebony";
+                case 74: return "Mahogany";
+                case 75: return "Oak";
+                case 76: return "Pine";
+                case 77: return "Teak";
+            }
+
+            return "";
+        }
+
         private string InqSkillName(int iSkill)
         {
             return SkillExtensions.GetSkillName((Skill)iSkill);
@@ -542,26 +628,54 @@ namespace WeenieViewer.Appraisal
             return Math.Min(1.0, Math.Max(0.0, chance));
         }
 
-        public string InqWorkmanshipAdjective(int wlevel, int iGemType)
+        public string InqWorkmanshipAdjective(int wlevel, int iGemCount)
         {
-            /*
+            
             if (wlevel > 10) {
                 wlevel = 10;
             }
 
             string workmanship = getWorkmanship(wlevel);
-            if ($wlevel <= 4){
-                if ($isGem == true){
-				$workmanship.= "cut";
-                }else
+            if (wlevel <= 4){
+                if (iGemCount > 0)
                 {
-				$workmanship.= "crafted";
+				    workmanship += "cut";
+                }
+                else
+                {
+				    workmanship += "crafted";
                 }
             }
-            return $workmanship;
-            */
-            return "InqWorkmanshipAdjective--TODO";
+            return workmanship;
+        }
 
+        public string InqPluralizedGemName(int iGemType)
+        {
+            if (iGemType == 38)
+			    return "Rubies";
+		
+		    string gemname = InqMaterialName(iGemType);
+
+            if (iGemType == 11      // Amber
+                || iGemType == 24   // Green Jade
+                || iGemType == 27   // Jet
+                || iGemType == 29   // Lavender Jade
+                || iGemType == 32   // Onyx
+                || iGemType == 37   // Rose Quartz
+                || iGemType == 40   // Smoky Quartz
+                || iGemType == 46   // White Quartz
+                || iGemType == 36   // Red Jade
+                || iGemType == 45)  // White Jade
+            {
+				return "pieces of " + gemname;
+            }
+            if (iGemType == 26 || iGemType == 49) // Imperial Topaz, Yellow Topaz
+                return gemname  + "es";
+
+            if (iGemType != 28) // Lapis Lazuli
+                return gemname + "s";
+
+            return gemname;
         }
 
         public string getWorkmanship(int wlevel)

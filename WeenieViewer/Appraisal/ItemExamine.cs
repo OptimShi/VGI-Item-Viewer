@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Windows.Media.Media3D;
+using VGI_Item_Viewer.Enum;
+using VGI_Item_Viewer.WeenieViewer;
 using VGI_Item_Viewer.WeenieViewer.Appraisal;
 using WeenieViewer.Enums;
 
@@ -1081,9 +1084,12 @@ namespace WeenieViewer.Appraisal
             float rManaCModifier = 0;
             if(InqFloat((PropertyFloat)0x90u, ref rManaCModifier))
             {
-                rManaCModifier += 1;
-                string manaCModifier = ModifierToString(rManaCModifier);
-                AddItemInfo($"Bonus to Mana Conversion: {manaCModifier}.", false);
+                if (rManaCModifier != 0)
+                {
+                    rManaCModifier += 1;
+                    string manaCModifier = ModifierToString(rManaCModifier);
+                    AddItemInfo($"Bonus to Mana Conversion: {manaCModifier}.", false);
+                }
             }
 
             float eleDamageModPvM = 1;
@@ -1318,31 +1324,55 @@ namespace WeenieViewer.Appraisal
             }
 
             string strDesc = "";
+            string strAppend = "";
+            string strPrepend = "";
             if (InqString(PropertyString.LONG_DESC_STRING, ref strDesc))
             {
-                // TODO
+
                 string gearPlatingName = "";
                 if (InqString(PropertyString.GEAR_PLATING_NAME_STRING, ref gearPlatingName))
                     strDesc = gearPlatingName;
 
                 int iDecoration = 0;
+                int iGemCount = 0;
+
+                // eg "Utteraly Flawless Gold Spadone of Blood Drinker, set with 6 Sapphires"
                 if (InqInt(PropertyInt.APPRAISAL_LONG_DESC_DECORATION_INT, ref iDecoration))
                 {
-                    int iGemCount = 0;
-                    if ((iDecoration & 1) != 0 && InqInt(PropertyInt.ITEM_WORKMANSHIP_INT, ref iGemCount))
+                    int iWorkmanship = 0;
+                    if ((iDecoration & (int)LDDecoration.LDDecoration_PrependWorkmanship) != 0 && InqInt(PropertyInt.ITEM_WORKMANSHIP_INT, ref iWorkmanship))
                     {
-                        // More here. Is any of this even applicable to the stock DB?
+                        string strMaterial = InqWorkmanshipAdjective(iWorkmanship, iGemCount);
+                        strPrepend += strMaterial;
+                    }
+                    int iMaterial = 0;
+                    if (InqInt(PropertyInt.MATERIAL_TYPE_INT, ref iMaterial)) {
+                        string strMaterial = InqMaterialName(iMaterial);
+                        strPrepend += strMaterial + ' ';
                     }
                 }
 
-            }
-            else 
-                InqString(PropertyString.SHORT_DESC_STRING, ref strDesc);
+                int iGemType = 0;
 
-            if(strDesc != "")
-            {
+                if ((iDecoration & 4) > 0 && InqInt(PropertyInt.GEM_COUNT_INT, ref iGemCount) && InqInt(PropertyInt.GEM_TYPE_INT, ref iGemType)){
+                    string strMaterial;
+                    if (iGemCount == 1)
+					    strMaterial = InqMaterialName(iGemType);
+                    else
+	    				strMaterial = InqPluralizedGemName(iGemType);
+				
+				    strAppend = strAppend.Trim() + $", set with {iGemCount} {strMaterial}";
+                }
+
                 AddItemInfo("");
-                AddItemInfo(strDesc);
+                AddItemInfo(strPrepend + strDesc + strAppend);
+            }
+            else { 
+                if(InqString(PropertyString.SHORT_DESC_STRING, ref strDesc))
+                {
+                    AddItemInfo("");
+                    AddItemInfo(strDesc);
+                }
             }
 
             int bitfield = 0;
