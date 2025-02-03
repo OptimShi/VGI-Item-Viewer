@@ -5,6 +5,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using VGI_Item_Viewer.VGIItem;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VGI_Item_Viewer
@@ -133,9 +134,12 @@ namespace VGI_Item_Viewer
         public int Workmanship { get; set; }
         public int Tinks { get; set; }
         public float Melee_Defense { get; set; }
+        public float Melee_Defense_V { get; set; }
         public float Damage { get; set; }
-        public int Magic_Defense { get; set; }
+        public float Damage_V { get; set; }
+        public float Attack { get; set; }
         public int WieldReq { get; set; }
+        public int Cleave { get; set; }
         public string Cantrips { get; set; }
 
         private int ObjectId;
@@ -148,7 +152,11 @@ namespace VGI_Item_Viewer
             grid.Character = item.CharacterName;
             grid.Damage_Type = item.GetDamageType();
             grid.Melee_Defense = item.GetMeleeDefense();
+            grid.Melee_Defense_V = (float)item.GetBuffedDoubleValueKey(Enum.DoubleValueKey.MeleeDefenseBonus);
             grid.Damage = item.GetDamage();
+            grid.Damage_V = (float)item.CalcedBuffedTinkedDamage;
+
+            grid.Attack = (float)item.GetBuffedDoubleValueKey(Enum.DoubleValueKey.AttackBonus);
 
             if (item.IntProps.ContainsKey(109)) // ITEM_DIFFICULTY_INT 
                 grid.LoreReq = item.IntProps[109];
@@ -162,10 +170,6 @@ namespace VGI_Item_Viewer
             if (item.IntProps.ContainsKey(160)) // WIELD_DIFFICULTY_INT 
                 grid.WieldReq = item.IntProps[160];
 
-            if (item.FloatProps.ContainsKey(150)) // WEAPON_MAGIC_DEFENSE_FLOAT  
-            {
-                grid.Magic_Defense = (int)((item.FloatProps[150] - 1) * 100);
-            }
 
             grid.Cantrips = item.GetCantrips();
 

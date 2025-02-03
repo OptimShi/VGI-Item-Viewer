@@ -33,7 +33,7 @@
             </MenuItem>
         </Menu>
 
-        <TabControl Grid.Row="1" x:Name="tabGroup">
+        <TabControl Grid.Row="1" x:Name="tabGroup" SelectionChanged="tabGroup_SelectionChanged">
             <TabItem Header="Wands" x:Name="tabMagic">
                 <DataGrid x:Name="gridMagicItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGeneratingColumn="griMagicItems_AutoGeneratingColumn" MouseDoubleClick="gridItems_MouseDoubleClick"/>
             </TabItem>
@@ -51,7 +51,7 @@
 
         <StatusBar Grid.Row="2">
             <StatusBarItem HorizontalAlignment="Left">
-                <TextBlock Name="lblResultsCount" Text="RESULTS" HorizontalAlignment="Left" />
+                <TextBlock Name="lblResultsCount" Text="RESULTS" HorizontalAlignment="Left" Width="355" />
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
                 <TextBlock Name="lblFilename" Text="FILENAME" HorizontalAlignment="Right" />

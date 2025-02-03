@@ -14,9 +14,9 @@ using VGI_Item_Viewer.WeenieViewer.Appraisal;
 using WeenieViewer.Db.weenie;
 using WeenieViewer.Enums;
 
-namespace VGI_Item_Viewer
+namespace VGI_Item_Viewer.VGIItem
 {
-    public class VGItem
+    public partial class VGItem
     {
 
         public Dictionary<int, bool> BoolProps = new Dictionary<int, bool>();
@@ -711,6 +711,8 @@ namespace VGI_Item_Viewer
 
             return "";
         }
+
+
 
         public dbWeenie? ConvertToWeenie()
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -102,6 +103,29 @@ namespace VGI_Item_Viewer
             LoadMissileGrid();
             LoadMeleeGrid();
             LoadPetsGrid();
+
+            SetResultsCounter();
+        }
+
+        private void SetResultsCounter()
+        {
+            TabItem activeTab = tabGroup.SelectedItem as TabItem;
+            if (activeTab != null)
+                switch (activeTab.Name)
+                {
+                    case "tabMagic": SetResultsText(gridMagicItems.Items.Count); break;
+                    case "tabMelee": SetResultsText(gridMeleeItems.Items.Count); break;
+                    case "tabMissile": SetResultsText(gridMissileItems.Items.Count); break;
+                    case "tabPets": SetResultsText(gridPetItems.Items.Count); break;
+                    default: lblResultsCount.Text = ""; break;
+                }
+
+        }
+
+        private void SetResultsText(int total)
+        {
+            lblResultsCount.Text = total + " items";
+
         }
 
         private void LoadMagicGrid()
@@ -277,6 +301,11 @@ namespace VGI_Item_Viewer
                 }
 
             }
+        }
+
+        private void tabGroup_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SetResultsCounter();
         }
     }
 }
