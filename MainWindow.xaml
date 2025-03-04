@@ -46,6 +46,15 @@
             <TabItem Header="Pets" x:Name="tabPets">
                 <DataGrid x:Name="gridPetItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGeneratingColumn="gridPetItems_AutoGeneratingColumn" MouseDoubleClick="gridItems_MouseDoubleClick"/>
             </TabItem>
+            <TabItem Header="Armor" x:Name="tabArmor">
+                <DataGrid x:Name="gridArmorItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGeneratingColumn="gridArmorItems_AutoGeneratingColumn" MouseDoubleClick="gridItems_MouseDoubleClick"/>
+            </TabItem>
+            <TabItem Header="Clothing" x:Name="tabClothing">
+                <DataGrid x:Name="gridClothingItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGeneratingColumn="gridArmorItems_AutoGeneratingColumn" MouseDoubleClick="gridItems_MouseDoubleClick"/>
+            </TabItem>
+            <TabItem Header="Misc" x:Name="tabMisc">
+                <DataGrid x:Name="gridMiscItems" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGeneratingColumn="gridArmorItems_AutoGeneratingColumn" MouseDoubleClick="gridItems_MouseDoubleClick"/>
+            </TabItem>
 
         </TabControl>
 

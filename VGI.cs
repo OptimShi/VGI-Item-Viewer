@@ -21,6 +21,9 @@ namespace VGI_Item_Viewer
         public Dictionary<int, VGItem> Melee = new Dictionary<int, VGItem>();
         public Dictionary<int, VGItem> Missile = new Dictionary<int, VGItem>();
         public Dictionary<int, VGItem> Pets = new Dictionary<int, VGItem>();
+        public Dictionary<int, VGItem> Armor = new Dictionary<int, VGItem>();
+        public Dictionary<int, VGItem> Clothing = new Dictionary<int, VGItem>();
+        public Dictionary<int, VGItem> Misc = new Dictionary<int, VGItem>();
 
         public VGI(string dbName = "")
         {
@@ -53,7 +56,7 @@ namespace VGI_Item_Viewer
              * Pets can be filtered by IconUnderlay = 06007420
              */
             // https://github.com/Mag-nus/Mag-Plugins/blob/43ee2ecf3e54f27b2362336d5e0c1336b22c1ca4/Shared/ObjectClass.cs#L61
-            string query = "SELECT rowid, OwnerCharName, ObjectName, SerializedData, ObjectClass, ObjectID FROM ObjectData where ObjectClass = 1 or ObjectClass = 9 or ObjectClass = 31 or ObjectClass = 8";
+            string query = "SELECT rowid, OwnerCharName, ObjectName, SerializedData, ObjectClass, ObjectID FROM ObjectData";// where ObjectClass = 1 or ObjectClass = 9 or ObjectClass = 31 or ObjectClass = 8";
             /*
              * 
              * Table => ObjectData
@@ -93,6 +96,12 @@ namespace VGI_Item_Viewer
                             case 1:
                                 Melee.Add(rowId, item);
                                 break;
+                            case 2:
+                                Armor.Add(rowId, item);
+                                break;
+                            case 3:
+                                Clothing.Add(rowId, item);
+                                break;
                             case 9:
                                 if(item.IntProps.ContainsKey(0x0D00000E)) // LOCATIONS_INT as provided by Decal
                                 {
@@ -101,21 +110,20 @@ namespace VGI_Item_Viewer
                                         Missile.Add(rowId, item);
                                     }
                                 }
-                                /*
-                                if (item.IntProps.ContainsKey(0x0d000011)) // AMMO_TYPE_INT
-                                {
-                                    Missile.Add(rowId, item);
-                                }
-                                */
                                 break;
                             case 31:
                                 MagicItems.Add(rowId, item);
                                 break;
                             case 8:
                                 if (item.GetPetLevel() > 0)
-                                {
                                     Pets.Add(rowId, item);
+                                else
+                                {
+                                    Misc.Add(rowId, item);
                                 }
+                                break;
+                            default:
+                                Misc.Add(rowId, item);
                                 break;
                         }
 

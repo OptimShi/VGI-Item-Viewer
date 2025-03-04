@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 using VGI_Item_Viewer.Controls;
+using VGI_Item_Viewer.GridClasses;
 using WeenieViewer.Db.weenie;
 
 namespace VGI_Item_Viewer
@@ -103,6 +104,9 @@ namespace VGI_Item_Viewer
             LoadMissileGrid();
             LoadMeleeGrid();
             LoadPetsGrid();
+            LoadArmorGrid();
+            LoadClothingGrid();
+            LoadMiscGrid();
 
             SetResultsCounter();
         }
@@ -117,6 +121,9 @@ namespace VGI_Item_Viewer
                     case "tabMelee": SetResultsText(gridMeleeItems.Items.Count); break;
                     case "tabMissile": SetResultsText(gridMissileItems.Items.Count); break;
                     case "tabPets": SetResultsText(gridPetItems.Items.Count); break;
+                    case "tabArmor": SetResultsText(gridArmorItems.Items.Count); break;
+                    case "tabClothing": SetResultsText(gridClothingItems.Items.Count); break;
+                    case "tabMisc": SetResultsText(gridMiscItems.Items.Count); break;
                     default: lblResultsCount.Text = ""; break;
                 }
 
@@ -124,8 +131,7 @@ namespace VGI_Item_Viewer
 
         private void SetResultsText(int total)
         {
-            lblResultsCount.Text = total + " items";
-
+            lblResultsCount.Text = $"{total} items";
         }
 
         private void LoadMagicGrid()
@@ -174,6 +180,40 @@ namespace VGI_Item_Viewer
             //gridPetItems.Columns["Damage"].DefaultCellStyle.Format("P");
         }
 
+        private void LoadArmorGrid()
+        {
+            List<ArmorGridItem> gridItems = new List<ArmorGridItem>();
+            foreach (var item in vgi.Armor)
+            {
+                var gridItem = ArmorGridItem.ConvertFromItem(item.Value);
+                gridItems.Add(gridItem);
+            }
+            gridArmorItems.ItemsSource = gridItems;
+        }
+
+        private void LoadClothingGrid()
+        {
+            List<ClothingGridItem> gridItems = new List<ClothingGridItem>();
+            foreach (var item in vgi.Clothing)
+            {
+                var gridItem = ClothingGridItem.ConvertFromItem(item.Value);
+                gridItems.Add(gridItem);
+            }
+            gridClothingItems.ItemsSource = gridItems;
+        }
+
+        private void LoadMiscGrid()
+        {
+            List<MiscGridItem> gridItems = new List<MiscGridItem>();
+            foreach (var item in vgi.Misc)
+            {
+                var gridItem = MiscGridItem.ConvertFromItem(item.Value);
+                gridItems.Add(gridItem);
+            }
+            gridMiscItems.ItemsSource = gridItems;
+        }
+
+
         private void miExit_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
@@ -218,10 +258,11 @@ namespace VGI_Item_Viewer
             {
                 case "Damage":
                     {
-                        //(e.Column as DataGridTextColumn).Binding.StringFormat = "01";
+                        (e.Column as DataGridTextColumn).Binding.StringFormat = "0.00";
                     }
                     break;
                 case "MaxMeleeDefense":
+                case "Attack":
                 case "Melee_Defense":
                 case "Magic_Defense":
                     {
@@ -233,6 +274,19 @@ namespace VGI_Item_Viewer
         }
 
         private void gridPetItems_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Damage":
+                    {
+                        // Format the column as a percentage to two decimal places
+                        (e.Column as DataGridTextColumn).Binding.StringFormat = "P02";
+                    }
+                    break;
+            }
+        }
+
+        private void gridArmorItems_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -288,6 +342,18 @@ namespace VGI_Item_Viewer
             else if (grid.SelectedItem is PetGridItem)
             {
                 objectId = ((PetGridItem)grid.SelectedItem).GetObjectId();
+            }
+            else if (grid.SelectedItem is ArmorGridItem)
+            {
+                objectId = ((ArmorGridItem)grid.SelectedItem).GetObjectId();
+            }
+            else if (grid.SelectedItem is ClothingGridItem)
+            {
+                objectId = ((ClothingGridItem)grid.SelectedItem).GetObjectId();
+            }
+            else if (grid.SelectedItem is MiscGridItem)
+            {
+                objectId = ((MiscGridItem)grid.SelectedItem).GetObjectId();
             }
 
             if (objectId != 0)

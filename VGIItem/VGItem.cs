@@ -167,6 +167,8 @@ namespace VGI_Item_Viewer.VGIItem
                 }
             }
 
+            int tinksRemaining = GetTinksLeft();
+            
             return defense + (cantripMod / 100);
         }
 

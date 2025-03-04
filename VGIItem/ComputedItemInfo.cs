@@ -28,6 +28,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 using VGI_Item_Viewer.Enum;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace VGI_Item_Viewer.VGIItem
 {
@@ -153,6 +154,75 @@ namespace VGI_Item_Viewer.VGIItem
             }
         }
 
+        internal static double GetBuffedAverageDamage(double maxDamage, double variance, List<int> spells)
+        {
+            maxDamage += 24.0; // Incantation of Blood Drinker
+            if (spells.Contains(6089)) // 	Legendary Blood Thirst
+            {
+                maxDamage += 10.0;
+            }
+            else if (spells.Contains(4661)) // Epic Blood Thirst
+            {
+                maxDamage += 7.0;
+            }
+            else if (spells.Contains(2586)) // Major Blood Thirst
+            {
+                maxDamage += 4.0;
+            }
+            else if (spells.Contains(2598)) // Minor Blood Thirst
+            {
+                maxDamage += 2.0;
+            }
+            maxDamage += 1.0;
+            double minDamage = maxDamage * (1.0 - variance);
+            double avgDamage = (maxDamage + minDamage) / 2.0;
+            return 0.89 * avgDamage + 0.11 * maxDamage;
+        }
+
+        public int GetTinksLeft()
+        {
+            if (GetValueInt(IntValueKey.Workmanship, 0) == 0) // ITEM_WORKMANSHIP_INT 
+                return 0;
+            
+            int numberOfTinksLeft = Math.Max(10 - GetValueInt(IntValueKey.NumberTimesTinkered, 0), 0);
+            if (GetValueInt(IntValueKey.Imbued, 0) != 0)
+                numberOfTinksLeft--; // Factor in an imbue tink
+
+            return numberOfTinksLeft;
+        }
+
+        internal float CalcVirindiMeleeDamage()// int A_0, List<int> spells)
+        {
+            double maxDamage = (float)GetValueInt(IntValueKey.MaxDamage, 0);
+            double variance = GetValueDouble(DoubleValueKey.Variance, 0);
+
+            int numberOfTinksLeft = GetTinksLeft();
+            numberOfTinksLeft = Math.Min(9, numberOfTinksLeft); // leave room for an imbue
+
+            int NumIronTinks = 0;
+            int NumGraniteTinks = 0;
+            double buffedDamage = GetBuffedAverageDamage(maxDamage, variance, Spells); // BuffedAverageDamage( maxDamage, variance, Spells)
+            if (numberOfTinksLeft <= 0)
+                return (float)buffedDamage;
+
+            var tinkedDamage = buffedDamage;
+            for (int num = 0; num <= numberOfTinksLeft; num++)
+            {
+                int num2 = numberOfTinksLeft - num;
+                double a_ = maxDamage + (double)num;
+                double a_2 = variance * Math.Pow(0.8, num2);
+                double num3 = GetBuffedAverageDamage(a_, a_2, Spells); // BuffedAverageDamage( maxDamage, variance, Spells)
+                if (num3 > tinkedDamage)
+                {
+                    tinkedDamage = num3;
+                    NumIronTinks = num;
+                    NumGraniteTinks = num2;
+                }
+
+            }
+            return Convert.ToSingle(tinkedDamage); //.ToString("000.00") + " (" + A_2 + "i, " + A_3 + "g)" + text; // DAMAGE (Iron Tinks, Granite Tinks) (Leg. Thirst)
+        }
+
         int IronTinks = 0;
         int GraniteTinks = 0;
         public double CalcedBuffedTinkedDamage
@@ -165,14 +235,7 @@ namespace VGI_Item_Viewer.VGIItem
                 double variance = GetValueDouble(DoubleValueKey.Variance, 0.0);
                 int maxDamage = GetBuffedLogValueKey(IntValueKey.MaxDamage);
 
-                int numberOfTinksLeft = Math.Max(10 - GetValueInt(IntValueKey.NumberTimesTinkered, 0), 0);
-
-                if (GetValueInt(IntValueKey.Imbued, 0) == 0)
-                    numberOfTinksLeft--; // Factor in an imbue tink
-
-                // If this is not a loot generated item, it can't be tinked
-                if (GetValueInt(IntValueKey.Material, 0) == 0)
-                    numberOfTinksLeft = 0;
+                int numberOfTinksLeft = GetTinksLeft();
 
                 for (int i = 1; i <= numberOfTinksLeft; i++)
                 {
@@ -203,14 +266,7 @@ namespace VGI_Item_Viewer.VGIItem
             double variance = GetValueDouble(DoubleValueKey.Variance, 0.0);
             int maxDamage = GetBuffedLogValueKey(IntValueKey.MaxDamage);
 
-            int numberOfTinksLeft = Math.Max(10 - GetValueInt(IntValueKey.NumberTimesTinkered, 0), 0);
-
-            if (GetValueInt(IntValueKey.Imbued, 0) == 0)
-                numberOfTinksLeft--; // Factor in an imbue tink
-
-            // If this is not a loot generated item, it can't be tinked
-            if (GetValueInt(IntValueKey.Material, 0) == 0)
-                numberOfTinksLeft = 0;
+            int numberOfTinksLeft = GetTinksLeft();
 
             for (int i = 1; i <= numberOfTinksLeft; i++)
             {
